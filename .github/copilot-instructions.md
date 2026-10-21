@@ -25,7 +25,7 @@
 
 ## UI and accessibility conventions
 
-- Use the existing `:root` semantic color variables and their `prefers-color-scheme: dark` overrides. Keep the narrow centered layout, system sans-serif stack, 15px body text, and mobile adjustments at 480px.
+- Use the existing `:root` semantic color variables. The app always uses its dark palette, independent of the system color preference; keep `color-scheme` and theme metadata consistent with it. Keep the narrow centered layout, system sans-serif stack, 15px body text, and mobile adjustments at 480px.
 - Correct and incorrect states combine color, text, and symbols: `.answer.correct`/`.answer.wrong`, `.feedback.good`/`.feedback.bad`, and `.mission-dot.good`/`.mission-dot.bad`.
 - Keep `#progress`'s `aria-valuenow` synchronized with the visual `scaleX` fill. Score and feedback use polite live announcements.
 - Preserve native buttons, visible `:focus-visible` styling, the answers group's question label, and programmatic focus targets (`tabindex="-1"` on question/result headings). After an answer focus goes to Next; after advancing or restarting it goes to the question; results focus their heading.

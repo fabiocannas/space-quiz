@@ -3,7 +3,7 @@
 Orbital is a ten-question space quiz with an animated orbital scene, instant
 answer feedback, score and progress tracking, and a final mission summary.
 Review missed answers and their explanations, then replay for a fresh attempt.
-The interface supports light and dark themes, reduced motion, native keyboard
+The interface uses a consistent dark theme regardless of system preferences, with reduced motion, native keyboard
 navigation, and A-D answer shortcuts.
 
 **Play online:** https://www.fabiocannas.com/space-quiz/

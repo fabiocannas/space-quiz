@@ -3,28 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light dark">
-  <meta name="theme-color" content="#f5f3fb">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#191723">
   <meta name="description" content="A little curiosity. A big universe. Explore space with this ten-question quiz.">
   <title>Orbital — A space exploration quiz</title>
   <style>
     :root {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color-scheme: light dark;
-      --bg: #f5f3fb;
-      --surface: #fff;
-      --text: #29243c;
-      --muted: #706b80;
-      --line: #e8e4f0;
-      --purple: #7148cb;
-      --purple-hover: #5f39b4;
-      --soft: #f0eafb;
-      --option: #fcfbfe;
-      --green: #22734b;
-      --green-bg: #edf9f1;
-      --red: #b4364c;
-      --red-bg: #fff0f2;
-      --shadow: 0 14px 45px -25px #4b346c35;
+      color-scheme: dark;
+      --bg: #191723;
+      --surface: #24212f;
+      --text: #f0edf8;
+      --muted: #b1a9c2;
+      --line: #3b354b;
+      --purple: #bda0ff;
+      --purple-hover: #d0baff;
+      --soft: #373044;
+      --option: #292533;
+      --green: #98dfb5;
+      --green-bg: #20382c;
+      --red: #ffadbc;
+      --red-bg: #422831;
+      --shadow: 0 14px 45px -25px #0008;
       background: var(--bg);
       color: var(--text);
       font-size: 15px;
@@ -90,9 +90,9 @@
     .answer-mark { font-weight: 700; font-size: 18px; }
     .answer:disabled { cursor: default; opacity: 1; }
     .answer.correct { background: var(--green-bg); border-color: #63b58a; color: var(--green); animation: correct-pop .4s cubic-bezier(.16, 1, .3, 1); }
-    .answer.correct .letter { background: var(--green); color: #fff; border-color: var(--green); }
+    .answer.correct .letter { background: var(--green); color: #173524; border-color: var(--green); }
     .answer.wrong { background: var(--red-bg); border-color: #df8293; color: var(--red); animation: shake .42s ease-in-out; }
-    .answer.wrong .letter { background: var(--red); color: #fff; border-color: var(--red); }
+    .answer.wrong .letter { background: var(--red); color: #42212b; border-color: var(--red); }
     .answer.subdued { color: var(--muted); }
     .feedback { margin-top: 16px; padding: 13px 14px; border-radius: 10px; font-size: 13px; line-height: 1.6; animation: reveal .25s ease-out; }
     .feedback.good { background: var(--green-bg); color: var(--green); }
@@ -101,7 +101,7 @@
     [hidden] { display: none !important; }
     .card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-top: 23px; }
     .hint { font-size: 12px; color: var(--muted); }
-    .primary { border: 0; background: var(--purple); color: #fff; padding: 13px 19px; border-radius: 10px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 45px; transition: background .18s, transform .18s; }
+    .primary { border: 0; background: var(--purple); color: #24183d; padding: 13px 19px; border-radius: 10px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 45px; transition: background .18s, transform .18s; }
     .primary:not(:disabled):hover { background: var(--purple-hover); transform: translateY(-1px); }
     .primary:disabled { background: var(--soft); color: var(--muted); cursor: not-allowed; }
     .primary svg { width: 16px; height: 16px; }
@@ -148,13 +148,7 @@
     @keyframes shake { 0%,100% { transform: translateX(0); } 20%,60% { transform: translateX(-6px); } 40%,80% { transform: translateX(6px); } }
     @keyframes correct-pop { 0% { transform: scale(.97); } 55% { transform: scale(1.015); } 100% { transform: scale(1); } }
     @keyframes reveal { from { opacity: .3; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-    @media (prefers-color-scheme: dark) {
-      :root { --bg: #191723; --surface: #24212f; --text: #f0edf8; --muted: #b1a9c2; --line: #3b354b; --purple: #bda0ff; --purple-hover: #d0baff; --soft: #373044; --option: #292533; --green: #98dfb5; --green-bg: #20382c; --red: #ffadbc; --red-bg: #422831; --shadow: 0 14px 45px -25px #0008; }
-      .primary { color: #24183d; }
-      .answer.correct .letter { color: #173524; }
-      .answer.wrong .letter { color: #42212b; }
-      .planet-disc { fill: #a68bdb; }
-    }
+    .planet-disc { fill: #a68bdb; }
     @media (max-width: 480px) {
       .topbar { padding: 23px 21px 0; }
       .top-note { font-size: 11px; }
@@ -182,7 +176,7 @@
 <body>
   <!-- A pocket-sized space mission: soft violet, orbital illustration, and a single focused question.
        Answer, learn a little fact, then advance. Green and red states always include text and symbols.
-       Everything is local, including the illustration; light and dark follow the reader's system. -->
+       Everything is local, including the illustration; the dark theme is consistent across system preferences. -->
   <header class="topbar">
     <div class="brand">
       <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true"><circle cx="14" cy="14" r="6" fill="currentColor"/><ellipse cx="14" cy="14" rx="14" ry="5" transform="rotate(-35 14 14)" stroke="currentColor" stroke-width="1.6"/><circle cx="23" cy="5" r="2" fill="currentColor"/></svg>
