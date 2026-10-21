@@ -118,6 +118,21 @@
     .mission-dot { display: grid; place-items: center; height: 28px; width: 28px; border-radius: 7px; font-size: 12px; font-weight: 650; }
     .mission-dot.good { color: var(--green); background: var(--green-bg); }
     .mission-dot.bad { color: var(--red); background: var(--red-bg); }
+    .answer-review { margin-bottom: 22px; text-align: left; }
+    .review-toggle { display: flex; justify-content: space-between; align-items: center; gap: 12px; width: 100%; min-height: 46px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--option); color: var(--text); font-weight: 600; text-align: left; cursor: pointer; }
+    .review-toggle:hover { border-color: var(--purple); background: var(--soft); }
+    .review-toggle::after { content: "+"; color: var(--purple); font-size: 20px; }
+    .review-toggle[aria-expanded="true"]::after { content: "−"; }
+    .review-list { list-style: none; padding: 0; margin: 6px 0 0; }
+    .review-item { padding: 20px 0; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+    .review-item h3 { margin: 0 0 13px; font-size: 16px; line-height: 1.5; font-weight: 650; }
+    .review-answers { margin: 0; font-size: 14px; line-height: 1.6; }
+    .review-answers dt { font-size: 12px; font-weight: 650; margin-top: 10px; }
+    .review-answers dd { margin: 2px 0 0; }
+    .review-selected { color: var(--red); }
+    .review-correct { color: var(--green); }
+    .review-fact { color: var(--muted); margin: 14px 0 0; font-size: 14px; line-height: 1.7; }
+    .all-correct { margin: 0 0 22px; padding: 13px 14px; background: var(--green-bg); color: var(--green); border-radius: 10px; font-size: 14px; line-height: 1.6; }
     .results .primary { width: 100%; }
     .result-note { font-size: 12px; color: var(--muted); margin: 15px 0 0; }
     @keyframes float { 0%,100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-5px) rotate(2deg); } }
@@ -290,6 +305,11 @@
         <div class="result-score" id="result-score"></div>
         <p class="result-label">correct answers · mission complete</p>
         <div class="mission-dots" id="mission-dots" aria-label="Your answers"></div>
+        <div class="answer-review" id="answer-review" hidden>
+          <button class="review-toggle" id="review-toggle" type="button" aria-expanded="false" aria-controls="review-list">Review missed answers</button>
+          <ol class="review-list" id="review-list" aria-label="Missed answers in question order" hidden></ol>
+        </div>
+        <p class="all-correct" id="all-correct" hidden>All answers correct! No missed questions to review.</p>
         <button class="primary" id="restart">Explore again <span aria-hidden="true">↗</span></button>
         <p class="result-note">The universe always has more to teach us.</p>
       </div>
@@ -356,7 +376,7 @@
       answered = true;
       const item = questions[current];
       const correct = selected === item.answer;
-      history.push(correct);
+      history.push({ selected, correct });
       if (correct) score++;
       $("score").textContent = `${score} ${score === 1 ? "point" : "points"}`;
       [...$("answers").children].forEach((button, index) => {
@@ -404,7 +424,7 @@
       $("result-copy").textContent = reaction[2];
       $("result-score").innerHTML = `${score} <span>/ ${questions.length}</span>`;
       $("mission-dots").replaceChildren();
-      history.forEach((correct, index) => {
+      history.forEach(({ correct }, index) => {
         const dot = document.createElement("span");
         dot.className = `mission-dot ${correct ? "good" : "bad"}`;
         dot.textContent = correct ? "✓" : "×";
@@ -412,9 +432,51 @@
         dot.title = `Question ${index + 1}: ${correct ? "correct" : "incorrect"}`;
         $("mission-dots").append(dot);
       });
+      renderReview();
       $("result-title").focus({ preventScroll: true });
     }
 
+    function renderReview() {
+      $("review-list").replaceChildren();
+      $("review-list").hidden = true;
+      $("review-toggle").setAttribute("aria-expanded", "false");
+      const missed = history.filter(({ correct }) => !correct).length;
+      $("answer-review").hidden = missed === 0;
+      $("all-correct").hidden = missed !== 0;
+      $("review-toggle").textContent = `Review missed answers (${missed})`;
+      history.forEach(({ selected, correct }, index) => {
+        if (correct) return;
+        const item = questions[index];
+        const entry = document.createElement("li");
+        entry.className = "review-item";
+        const heading = document.createElement("h3");
+        heading.textContent = `Question ${index + 1}: ${item.question}`;
+        const answers = document.createElement("dl");
+        answers.className = "review-answers";
+        [
+          ["Your answer (incorrect)", item.options[selected], "review-selected"],
+          ["Correct answer", item.options[item.answer], "review-correct"]
+        ].forEach(([label, answer, className]) => {
+          const term = document.createElement("dt");
+          term.textContent = label;
+          const value = document.createElement("dd");
+          value.className = className;
+          value.textContent = answer;
+          answers.append(term, value);
+        });
+        const fact = document.createElement("p");
+        fact.className = "review-fact";
+        fact.textContent = item.fact;
+        entry.append(heading, answers, fact);
+        $("review-list").append(entry);
+      });
+    }
+
+    $("review-toggle").addEventListener("click", () => {
+      const expanded = $("review-toggle").getAttribute("aria-expanded") !== "true";
+      $("review-toggle").setAttribute("aria-expanded", String(expanded));
+      $("review-list").hidden = !expanded;
+    });
     $("next").addEventListener("click", () => {
       if (!answered) return;
       if (current === questions.length - 1) showResults();
@@ -424,6 +486,11 @@
       current = 0;
       score = 0;
       history = [];
+      $("review-list").replaceChildren();
+      $("review-list").hidden = true;
+      $("review-toggle").setAttribute("aria-expanded", "false");
+      $("answer-review").hidden = true;
+      $("all-correct").hidden = true;
       $("score").textContent = "0 points";
       $("progress-fill").style.transform = "scaleX(0)";
       $("progress").setAttribute("aria-valuenow", "0");

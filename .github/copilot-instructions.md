@@ -7,6 +7,7 @@
 - Validate changes in the actual browser page. For one focused scoring check, reload, choose **Mars** on question 1, and verify `1 point`, green feedback, disabled answers, an enabled Next button, and progress value `1`.
 - For the incorrect path, choose **Venus** on question 1: score remains zero, the selection shakes red, Mars is revealed in green, and the explanation names the correct answer.
 - For a full run, the zero-based correct answer indices are `[1, 2, 3, 0, 1, 2, 3, 0, 1, 2]`. Check mixed answers, result reactions at scores 0, 4, 7, and 10, and replay resetting score, progress, history, and question controls.
+- For missed-answer review, complete a mixed run and expand/collapse the review. Check only missed questions appear in original order with the actual selection, correct answer, and fact; disclosure must not change score/history/progress. Check a perfect run shows the all-correct message and replay clears review content and expansion state.
 - Exercise native Tab/Shift+Tab and Enter/Space separately from A-D shortcuts. Synthetic `KeyboardEvent` dispatch tests shortcut handlers, not native focus navigation or button activation.
 - Browser automation may block local `file://` navigation even when the integrated browser can open the file. Do not report native keyboard checks as passed when only DOM focus or synthetic events were tested.
 
@@ -15,11 +16,12 @@
 - `index.html` contains theme/layout CSS, semantic page markup with an inline SVG scene, and a classic script at the end of the body. There is no module loader; the script expects its DOM targets to exist.
 - The intro is independent of quiz scoring. It contains the mission-control orbital display, animation toggle, and static mission briefing.
 - `questions` is the content source: each entry has `category`, `question`, four `options`, a zero-based `answer`, and an explanatory `fact`. Keep the ten-question contract; introductory copy and result thresholds also assume ten.
-- Quiz state is held in `current`, `score`, `answered`, and the boolean array `history`. It lasts only for the current page load.
+- Quiz state is held in `current`, `score`, `answered`, and `history`, an array of `{ selected, correct }` entries in question order. `selected` is the chosen option's zero-based index. State lasts only for the current page load.
 - `renderQuestion(focus)` rebuilds answer buttons, clears feedback, and gates Next. Both answer clicks and case-insensitive A-D shortcuts call `selectAnswer(index)`.
 - `selectAnswer` permits one submission per question, records correctness, updates score and progress, disables all choices, reveals feedback, and focuses Next. Progress counts answered questions, including incorrect ones.
 - Next advances explicitly; there is no automatic advance or timer. The last question switches the action to See results.
 - `showResults` swaps the question body for the result view, derives the reaction from score, and renders one history marker per answer. The restart handler resets quiz state and calls `renderQuestion(true)`.
+- `renderReview` builds a read-only list from incorrect history entries, including selected/correct answers and the existing fact. Its native button toggles `aria-expanded` and the list's `hidden` state without changing quiz state. Perfect scores show an all-correct message instead; replay clears the list and disclosure state.
 
 ## UI and accessibility conventions
 
